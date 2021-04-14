@@ -37,7 +37,6 @@ public class MainServlet extends HttpServlet {
     Optional.ofNullable(routes.get(req.getServletPath()))
         .map(o -> o.getOrDefault(req.getMethod(), errorCtrl::methodNotAllowed))
         .orElse(errorCtrl::notFound)
-        .handle(req, resp)
-        ;
+        .handle(req, resp);
   }
 }

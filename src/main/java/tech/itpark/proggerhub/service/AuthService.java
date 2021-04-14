@@ -11,6 +11,8 @@ import tech.itpark.proggerhub.security.AuthProvider;
 import tech.itpark.proggerhub.security.Authentication;
 import tech.itpark.proggerhub.service.model.UserAuthModel;
 import tech.itpark.proggerhub.service.model.UserModel;
+import tech.itpark.proggerhub.service.model.UserRegistryModel;
+import tech.itpark.proggerhub.service.model.UserRestoreModel;
 
 import java.util.Set;
 
@@ -23,7 +25,7 @@ public class AuthService implements AuthProvider {
 
   // TODO: id? -> long, UUID
   // TODO: кто должен делать вычистку данных? Validator vs RichModel
-  public long register(UserModel model) {
+  public long register(UserRegistryModel model) {
     if (model.getLogin() == null) {
       throw new BadLoginException();
     }
@@ -46,7 +48,7 @@ public class AuthService implements AuthProvider {
     // TODO: IB -> взламывать дорого -> hashed
     // md5 not secure <- sha2, ...
     return repository.save(new tech.itpark.proggerhub.repository.model.UserModel(model.getLogin().trim().toLowerCase(),
-        hasher.hash(model.getPassword())
+        hasher.hash(model.getPassword()), hasher.hash(model.getSecretWord())
     ));
   }
 
@@ -79,5 +81,13 @@ public class AuthService implements AuthProvider {
       throw new PermissionDeniedException();
     }
     // ok
+  }
+
+  public String restore(UserRestoreModel model) {
+    final var user = repository.getRestoreModel(model.getLogin()).orElseThrow(UserNotFoundException::new);
+    if (!hasher.match(user.getSecretWord(), model.getSecretWord())) {
+      throw new SecretWordNotMatchedException();
+    }
+    return "Вам отправлена ссылка на почту для восстановления пароля";
   }
 }

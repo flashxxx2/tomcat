@@ -8,6 +8,8 @@ import tech.itpark.proggerhub.repository.model.UserAuthModel;
 import tech.itpark.proggerhub.repository.model.UserModel;
 import tech.itpark.proggerhub.repository.model.UserTokenModel;
 import tech.itpark.proggerhub.repository.model.UserWithIdModel;
+import tech.itpark.proggerhub.service.model.UserRegistryModel;
+import tech.itpark.proggerhub.service.model.UserRestoreModel;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -23,12 +25,13 @@ public class AuthRepository {
     try (
         final var conn = ds.getConnection();
         final var stmt = conn.prepareStatement(
-            "INSERT INTO users(login, password) VALUES(?, ?) RETURNING id;"
+            "INSERT INTO users(login, password, secret_word) VALUES(?, ?, ?) RETURNING id;"
         );
     ) {
       var index = 0;
       stmt.setString(++index, model.getLogin());
       stmt.setString(++index, model.getHash());
+      stmt.setString(++index, model.getSecretCode());
       try (
           final var rs = stmt.executeQuery();
       ) {
@@ -71,21 +74,21 @@ public class AuthRepository {
         final var rs = stmt.executeQuery("SELECT id, login, password FROM users WHERE login = '" + login + "'");
     ) {
       return rs.next() ? Optional.of(
-          new UserWithIdModel(rs.getLong("id"), rs.getString("login"), rs.getString("password"))
+          new UserWithIdModel(rs.getLong("id"), rs.getString("login"), rs.getString("password"), rs.getString("secret_word"))
       ) : Optional.empty();
     } catch (SQLException e) {
       throw new DataAccessException(e);
     }
   }
 
-  public Optional<UserWithIdModel> findBySecretWord(String secretWord) {
+  public Optional<UserRestoreModel> getRestoreModel(String login) {
     try (
             final var conn = ds.getConnection();
             final var stmt = conn.createStatement();
-            final var rs = stmt.executeQuery("SELECT id, login, password FROM users WHERE secret_word = '" + secretWord + "'");
+            final var rs = stmt.executeQuery("SELECT login, secret_word FROM users WHERE login = '" + login + "'");
     ) {
       return rs.next() ? Optional.of(
-              new UserWithIdModel(rs.getLong("id"), rs.getString("login"), rs.getString("password"))
+              new UserRestoreModel(rs.getString("login"), rs.getString("secret_word"))
       ) : Optional.empty();
     } catch (SQLException e) {
       throw new DataAccessException(e);

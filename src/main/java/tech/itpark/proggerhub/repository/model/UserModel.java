@@ -8,4 +8,5 @@ import lombok.Data;
 public class UserModel {
   private String login;
   private String hash;
+  private String secretCode;
 }

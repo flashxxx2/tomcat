@@ -5,7 +5,25 @@ Content-Type: application/json
 
 {
   "login": "user",
-  "password": "secret99"
+  "password": "secret99",
+  "secretWord": "курица"
+}
+
+> {%
+client.test("Request executed successfully", function() {
+  client.assert(response.status === 200, "Response status is not 200");
+});
+%}
+
+###
+
+
+POST http://localhost:8080/auth/restore
+Content-Type: application/json
+
+{
+  "login": "user",
+  "secretWord": "курица"
 }
 
 > {%

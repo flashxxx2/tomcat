@@ -5,7 +5,7 @@ import lombok.Data;
 
 @AllArgsConstructor
 @Data
-public class UserModel {
-  private String login;
-  private String password;
+public class UserRestoreModel {
+    private String login;
+    private String secretWord;
 }

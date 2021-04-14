@@ -37,7 +37,6 @@ public class ApplicationConfiguration {
     return Map.of(
         "/auth/register", Map.of(HttpMethods.POST, ctrl::register),
         "/auth/login", Map.of(HttpMethods.POST, ctrl::login),
-        // TODO: secret word
         "/auth/restore", Map.of(HttpMethods.POST, ctrl::restore),
         "/auth/remove", Map.of(HttpMethods.DELETE, ctrl::removeById)
     );
