@@ -48,7 +48,6 @@ public class AuthController {
                 return;
             }
 
-            // TODO: handle business exceptions
             final var dto = converter.read(request.getReader(), UserDto.class);
             final var token = service.login(new UserModel(dto.getLogin(), dto.getPassword()));
 
@@ -59,7 +58,6 @@ public class AuthController {
         }
     }
 
-    // 1. ADMIN
     public void removeById(HttpServletRequest request, HttpServletResponse response) {
         final var auth = (Authentication) request.getAttribute("AUTH");
         service.removeById(auth);
@@ -74,9 +72,9 @@ public class AuthController {
 
             final var dto = converter.read(request.getReader(), UserDto.class);
             service.restore(new UserRestoreModel(dto.getLogin(), dto.getSecretWord()));
+            converter.write(response.getWriter(), "Check your email for instructions for restore password");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 }

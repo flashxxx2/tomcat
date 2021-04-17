@@ -3,6 +3,7 @@ package tech.itpark.servlet;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.UnavailableException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,7 +15,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
-// Servlet -> Singleton
 public class MainServlet extends HttpServlet {
   private Map<String, Map<String, Handler>> routes;
   private ErrorController errorCtrl;

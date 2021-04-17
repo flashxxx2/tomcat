@@ -2,6 +2,7 @@
 /out/
 /target/
 !.mvn/wrapper/maven-wrapper.jar
+apache-tomcat*
 
 ### STS ###
 .apt_generated
